@@ -1,6 +1,6 @@
 # Magic Mirror 🪞
 
-<img width="500" alt="Photo" src="https://user-images.githubusercontent.com/6628497/156099978-099f1755-90f2-4c80-a7f2-8cd2fe196e97.jpg"> <img width="500" alt="Screenshot" src="https://user-images.githubusercontent.com/6628497/156100884-ceb27970-a799-4c3b-87f9-e052d870df86.png">
+<img width="400" alt="Photo" src="https://user-images.githubusercontent.com/6628497/156099978-099f1755-90f2-4c80-a7f2-8cd2fe196e97.jpg"> <img width="400" alt="Screenshot" src="https://user-images.githubusercontent.com/6628497/156100884-ceb27970-a799-4c3b-87f9-e052d870df86.png">
 
 ## Features ✨
 - Displays the weather for your location using [Open Weather Map](https://openweathermap.org/)
