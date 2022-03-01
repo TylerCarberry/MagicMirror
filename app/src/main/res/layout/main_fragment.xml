@@ -1,0 +1,170 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/black"
+    tools:context=".MainFragment">
+
+    <TextView
+        android:id="@+id/date_text_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="8dp"
+        android:fontFamily="sans-serif-condensed-light"
+        android:text="Sunday January 1st 2022"
+        android:textColor="@color/white"
+        android:textSize="32sp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/time_text_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="8dp"
+        android:fontFamily="sans-serif-condensed-light"
+        android:textColor="@color/white"
+        android:textSize="64sp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/date_text_view"
+        tools:text="12:34" />
+
+    <TextView
+        android:id="@+id/seconds_text_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="4dp"
+        android:layout_marginTop="10dp"
+        android:fontFamily="sans-serif-condensed-light"
+        android:textColor="#7C7C7C"
+        app:layout_constraintTop_toTopOf="@id/time_text_view"
+        app:layout_constraintLeft_toRightOf="@id/time_text_view"
+        android:textSize="32dp"
+        />
+
+    <TextView
+        android:id="@+id/am_pm_text_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/white"
+        android:layout_marginLeft="4dp"
+        android:textSize="64sp"
+        android:fontFamily="sans-serif-condensed-light"
+        app:layout_constraintLeft_toRightOf="@id/seconds_text_view"
+        app:layout_constraintTop_toTopOf="@id/time_text_view"
+        android:text="PM"
+        />
+
+    <ImageView
+        android:id="@+id/weather_image_view"
+        android:layout_width="120dp"
+        android:layout_height="120dp"
+        android:contentDescription="@null"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        />
+
+    <TextView
+        android:id="@+id/degrees_text_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:fontFamily="sans-serif-condensed-light"
+        android:textColor="@color/white"
+        android:textSize="72sp"
+        app:layout_constraintBottom_toBottomOf="@id/weather_image_view"
+        app:layout_constraintRight_toLeftOf="@id/weather_image_view"
+        app:layout_constraintTop_toTopOf="@id/weather_image_view"
+        tools:text="72°" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/weather_recycler_view"
+        app:layout_constraintTop_toBottomOf="@id/weather_image_view"
+        app:layout_constraintRight_toRightOf="parent"
+        android:orientation="vertical"
+        android:layout_marginTop="4dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_width="250dp"
+        android:layout_height="wrap_content"/>
+
+    <TextView
+        android:id="@+id/calendar_header"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="64dp"
+        android:layout_marginLeft="8dp"
+        android:fontFamily="sans-serif-medium"
+        android:text="CALENDAR"
+        android:textColor="@color/white"
+        android:textSize="24sp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/time_text_view" />
+
+    <View
+        android:id="@+id/calendar_divider"
+        app:layout_constraintTop_toBottomOf="@id/calendar_header"
+        android:foreground="@color/white"
+        android:layout_marginTop="4dp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="@id/calendar_recycler_view"
+        android:layout_marginStart="8dp"
+        android:layout_width="0dp"
+        android:layout_height="1dp"/>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/calendar_recycler_view"
+        app:layout_constraintTop_toBottomOf="@id/calendar_divider"
+        app:layout_constraintLeft_toLeftOf="parent"
+        android:orientation="vertical"
+        android:layout_marginTop="4dp"
+        android:layout_marginStart="8dp"
+        android:layout_width="400dp"
+        android:nestedScrollingEnabled="false"
+        android:layout_height="wrap_content"/>
+
+    <TextView
+        android:id="@+id/news_header"
+        android:layout_width="600dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toTopOf="@id/news_divider"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        android:textSize="28sp"
+        android:layout_marginBottom="4dp"
+        android:fontFamily="sans-serif-condensed-light"
+        android:gravity="center_horizontal"
+        android:textColor="@color/white"
+        tools:text="NEWS TITLE"
+        />
+
+    <View
+        android:id="@+id/news_divider"
+        android:layout_width="600dp"
+        android:layout_marginBottom="4dp"
+        app:layout_constraintBottom_toTopOf="@id/news_body"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        android:layout_height="1dp"
+        android:foreground="@color/white"
+        />
+
+    <TextView
+        android:id="@+id/news_body"
+        android:layout_width="600dp"
+        android:layout_height="wrap_content"
+        android:textColor="@color/white"
+        android:textSize="20sp"
+        android:layout_marginTop="4dp"
+        android:gravity="center_horizontal"
+        tools:text="NEWS BODY"
+        android:fontFamily="sans-serif-condensed-light"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        android:layout_marginBottom="8dp"
+        />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

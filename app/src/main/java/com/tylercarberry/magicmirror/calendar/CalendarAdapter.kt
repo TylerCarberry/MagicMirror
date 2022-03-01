@@ -1,0 +1,35 @@
+package com.tylercarberry.magicmirror.calendar
+
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import androidx.recyclerview.widget.RecyclerView
+import biweekly.component.VEvent
+import com.tylercarberry.magicmirror.BaseAdapter
+import com.tylercarberry.magicmirror.Utils.DAY_NAME_PATTERN
+import com.tylercarberry.magicmirror.databinding.CalendarItemBinding
+import java.text.SimpleDateFormat
+import java.util.*
+
+class CalendarAdapter(
+    items: List<VEvent>
+): BaseAdapter<VEvent, CalendarItemBinding, CalendarAdapter.ViewHolder>(items) {
+
+    class ViewHolder(view: View) : RecyclerView.ViewHolder(view)
+
+    override fun onCreateViewHolder(viewGroup: ViewGroup, viewType: Int): ViewHolder {
+        binding = CalendarItemBinding.inflate(LayoutInflater.from(viewGroup.context), viewGroup, false)
+        return ViewHolder(binding.root)
+    }
+
+    override fun onBindViewHolder(viewHolder: ViewHolder, position: Int) {
+        val event = items[position]
+
+        val formatter = SimpleDateFormat("$DAY_NAME_PATTERN d", Locale.US)
+        with(binding) {
+            eventDate.text = formatter.format(event.dateStart.value)
+            eventName.text = event.summary.value
+        }
+    }
+
+}

@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="calendar_url"></string>
+    <string name="holidays_url"></string>
+    <string name="news_api_key"></string>
+    <string name="weather_api_key"></string>
+</resources>
