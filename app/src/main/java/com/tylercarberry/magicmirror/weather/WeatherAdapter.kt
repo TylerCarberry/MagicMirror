@@ -6,7 +6,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.tylercarberry.magicmirror.BaseAdapter
 import com.tylercarberry.magicmirror.R
-import com.tylercarberry.magicmirror.Utils.DAY_NAME_PATTERN
+import com.tylercarberry.magicmirror.Utils.DAY_OF_WEEK_PATTERN
 import com.tylercarberry.magicmirror.databinding.WeatherItemBinding
 import java.text.SimpleDateFormat
 import java.util.*
@@ -27,7 +27,7 @@ class WeatherAdapter(
         val context = viewHolder.itemView.context
         val day = items[position]
 
-        val formatter = SimpleDateFormat(DAY_NAME_PATTERN, Locale.US)
+        val formatter = SimpleDateFormat(DAY_OF_WEEK_PATTERN, Locale.US)
         val dateName = when (position) {
             0 -> context.getString(R.string.today)
             1 -> context.getString(R.string.tomorrow)

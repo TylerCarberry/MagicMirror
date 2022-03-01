@@ -6,7 +6,6 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import biweekly.component.VEvent
 import com.tylercarberry.magicmirror.BaseAdapter
-import com.tylercarberry.magicmirror.Utils.DAY_NAME_PATTERN
 import com.tylercarberry.magicmirror.databinding.CalendarItemBinding
 import java.text.SimpleDateFormat
 import java.util.*
@@ -25,7 +24,7 @@ class CalendarAdapter(
     override fun onBindViewHolder(viewHolder: ViewHolder, position: Int) {
         val event = items[position]
 
-        val formatter = SimpleDateFormat("$DAY_NAME_PATTERN d", Locale.US)
+        val formatter = SimpleDateFormat("MMMM d", Locale.US)
         with(binding) {
             eventDate.text = formatter.format(event.dateStart.value)
             eventName.text = event.summary.value

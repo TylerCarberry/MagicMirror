@@ -8,7 +8,7 @@ import androidx.core.content.ContextCompat
 object Utils {
 
     const val LOCATION_PERMISSION = Manifest.permission.ACCESS_FINE_LOCATION
-    const val DAY_NAME_PATTERN = "EEEE"
+    const val DAY_OF_WEEK_PATTERN = "EEEE"
 
     fun hasLocationPermission(context: Context): Boolean {
         return hasPermission(context, LOCATION_PERMISSION)
