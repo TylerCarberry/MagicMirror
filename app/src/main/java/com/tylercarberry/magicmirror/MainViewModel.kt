@@ -6,6 +6,8 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import biweekly.component.VEvent
+import com.google.firebase.ktx.Firebase
+import com.google.firebase.remoteconfig.ktx.remoteConfig
 import com.tylercarberry.magicmirror.Utils.asOrdinal
 import com.tylercarberry.magicmirror.calendar.CalendarService
 import com.tylercarberry.magicmirror.news.Article
@@ -25,6 +27,7 @@ abstract class MainViewModel: ViewModel() {
     abstract val weatherWidget: LiveData<WeatherWidget>
     abstract val calendarEvents: LiveData<List<VEvent>>
     abstract val currentArticle: LiveData<Article>
+    abstract val screenBrightnessPercent: LiveData<Float>
 
     abstract fun setLocation(location: Location)
 }
@@ -43,6 +46,9 @@ class MainViewModelImpl(
         private const val NEWS_REFRESH_MILLISECONDS: Long = 30 * 60 * 1000
         private const val CALENDAR_REFRESH_MILLISECONDS: Long = 30 * 60 * 1000
         private const val WEATHER_REFRESH_MILLISECONDS: Long = 30 * 60 * 1000
+        private const val SCREEN_BRIGHTNESS_REFRESH_MILLISECONDS: Long = 5 * 60 * 1000
+
+        private const val SCREEN_BRIGHTNESS_KEY = "screen_brightness"
     }
 
     private var articles: List<Article> = listOf()
@@ -53,12 +59,31 @@ class MainViewModelImpl(
     override val weatherWidget = MutableLiveData<WeatherWidget>()
     override val calendarEvents = MutableLiveData<List<VEvent>>()
     override val currentArticle = MutableLiveData<Article>()
+    override val screenBrightnessPercent = MutableLiveData<Float>()
+
 
     init {
         initClock()
         initCalendar()
         initNews()
         initWeather()
+        initScreenBrightness()
+    }
+
+    private fun initScreenBrightness() {
+        viewModelScope.launch(Dispatchers.IO) {
+            while(true) {
+                refreshScreenBrightness()
+                delay(SCREEN_BRIGHTNESS_REFRESH_MILLISECONDS)
+            }
+        }
+    }
+
+    private fun refreshScreenBrightness() {
+        Firebase.remoteConfig.fetchAndActivate()
+            .addOnCompleteListener {
+                screenBrightnessPercent.postValue(Firebase.remoteConfig.getDouble(SCREEN_BRIGHTNESS_KEY).toFloat())
+            }
     }
 
     private fun initCalendar() {

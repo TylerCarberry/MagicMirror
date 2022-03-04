@@ -3,6 +3,7 @@ package com.tylercarberry.magicmirror
 import android.Manifest
 import android.annotation.SuppressLint
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -111,6 +112,13 @@ class MainFragment : BaseFragment<MainFragmentBinding>() {
                 binding.newsHeader.text = it.title
                 binding.newsBody.text = it.abstract
                 binding.newsDivider.isVisible = it.title.isNotEmpty() && it.abstract.isNotEmpty()
+            }
+
+            screenBrightnessPercent.observe(viewLifecycleOwner) {
+                Log.d("MainFragment", "Setting the screen brightness to $it")
+                requireActivity().window.attributes.apply {
+                    screenBrightness = it
+                }
             }
         }
     }

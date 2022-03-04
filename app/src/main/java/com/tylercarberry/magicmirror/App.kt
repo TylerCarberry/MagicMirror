@@ -1,6 +1,9 @@
 package com.tylercarberry.magicmirror
 
 import android.app.Application
+import com.google.firebase.ktx.Firebase
+import com.google.firebase.remoteconfig.ktx.remoteConfig
+import com.google.firebase.remoteconfig.ktx.remoteConfigSettings
 import com.google.gson.FieldNamingPolicy
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
@@ -44,6 +47,17 @@ class App: Application() {
             androidContext(this@App)
             modules(appModule)
         }
+
+        initRemoteConfig()
+    }
+
+    private fun initRemoteConfig() {
+        val remoteConfig = Firebase.remoteConfig
+        val configSettings = remoteConfigSettings {
+            minimumFetchIntervalInSeconds = 60
+        }
+        remoteConfig.setConfigSettingsAsync(configSettings)
+        remoteConfig.setDefaultsAsync(R.xml.remote_config_defaults)
     }
 
     private fun provideGson(): Gson {
