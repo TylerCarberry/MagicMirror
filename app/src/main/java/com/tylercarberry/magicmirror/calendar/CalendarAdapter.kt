@@ -1,7 +1,6 @@
 package com.tylercarberry.magicmirror.calendar
 
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import biweekly.component.VEvent
@@ -12,20 +11,20 @@ import java.util.*
 
 class CalendarAdapter(
     items: List<VEvent>
-): BaseAdapter<VEvent, CalendarItemBinding, CalendarAdapter.ViewHolder>(items) {
+): BaseAdapter<VEvent, CalendarAdapter.ViewHolder>(items) {
 
-    class ViewHolder(view: View) : RecyclerView.ViewHolder(view)
+    class ViewHolder(val binding: CalendarItemBinding) : RecyclerView.ViewHolder(binding.root)
 
     override fun onCreateViewHolder(viewGroup: ViewGroup, viewType: Int): ViewHolder {
-        binding = CalendarItemBinding.inflate(LayoutInflater.from(viewGroup.context), viewGroup, false)
-        return ViewHolder(binding.root)
+        val binding = CalendarItemBinding.inflate(LayoutInflater.from(viewGroup.context), viewGroup, false)
+        return ViewHolder(binding)
     }
 
     override fun onBindViewHolder(viewHolder: ViewHolder, position: Int) {
         val event = items[position]
 
         val formatter = SimpleDateFormat("MMMM d", Locale.US)
-        with(binding) {
+        with(viewHolder.binding) {
             eventDate.text = formatter.format(event.dateStart.value)
             eventName.text = event.summary.value
         }

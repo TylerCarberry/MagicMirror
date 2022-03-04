@@ -1,7 +1,6 @@
 package com.tylercarberry.magicmirror.weather
 
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.tylercarberry.magicmirror.BaseAdapter
@@ -14,13 +13,13 @@ import kotlin.math.roundToInt
 
 class WeatherAdapter(
     items: List<Daily>
-): BaseAdapter<Daily, WeatherItemBinding, WeatherAdapter.ViewHolder>(items) {
+): BaseAdapter<Daily, WeatherAdapter.ViewHolder>(items) {
 
-    class ViewHolder(view: View) : RecyclerView.ViewHolder(view)
+    class ViewHolder(val binding: WeatherItemBinding) : RecyclerView.ViewHolder(binding.root)
 
     override fun onCreateViewHolder(viewGroup: ViewGroup, viewType: Int): ViewHolder {
-        binding = WeatherItemBinding.inflate(LayoutInflater.from(viewGroup.context), viewGroup, false)
-        return ViewHolder(binding.root)
+        val binding = WeatherItemBinding.inflate(LayoutInflater.from(viewGroup.context), viewGroup, false)
+        return ViewHolder(binding)
     }
 
     override fun onBindViewHolder(viewHolder: ViewHolder, position: Int) {
@@ -34,7 +33,7 @@ class WeatherAdapter(
             else -> formatter.format(day.dt * 1000L)
         }
 
-        with(binding) {
+        with(viewHolder.binding) {
             weatherItemDate.text = dateName
             weatherItemDegreesHigh.text = context.getString(R.string.weather_degrees, day.temp.max.roundToInt())
             weatherItemDegreesLow.text = context.getString(R.string.weather_degrees, day.temp.min.roundToInt())
