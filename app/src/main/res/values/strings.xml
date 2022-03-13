@@ -3,4 +3,6 @@
     <string name="today">Today</string>
     <string name="tomorrow">Tomorrow</string>
     <string name="weather_degrees">%d°</string>
+    <string name="gas_price">Gas: $%.2f</string>
+    <string name="inflation">Inflation: %s</string>
 </resources>

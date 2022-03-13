@@ -6,14 +6,15 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import biweekly.component.VEvent
-import com.google.firebase.ktx.Firebase
-import com.google.firebase.remoteconfig.ktx.remoteConfig
 import com.tylercarberry.magicmirror.Utils.asOrdinal
 import com.tylercarberry.magicmirror.calendar.CalendarService
+import com.tylercarberry.magicmirror.gas.GasolineService
+import com.tylercarberry.magicmirror.inflation.InflationService
 import com.tylercarberry.magicmirror.news.Article
 import com.tylercarberry.magicmirror.news.NewsService
 import com.tylercarberry.magicmirror.weather.WeatherService
 import com.tylercarberry.magicmirror.weather.WeatherWidget
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -21,12 +22,15 @@ import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.math.roundToInt
 
+
 abstract class MainViewModel: ViewModel() {
     abstract val day: LiveData<String>
     abstract val time: LiveData<Date>
     abstract val weatherWidget: LiveData<WeatherWidget>
     abstract val calendarEvents: LiveData<List<VEvent>>
     abstract val currentArticle: LiveData<Article>
+    abstract val gasPrice: LiveData<Double>
+    abstract val inflation: LiveData<String>
     abstract val screenBrightnessPercent: LiveData<Float>
 
     abstract fun setLocation(location: Location)
@@ -35,7 +39,9 @@ abstract class MainViewModel: ViewModel() {
 class MainViewModelImpl(
     private val weatherService: WeatherService,
     private val newsService: NewsService,
-    private val calendarService: CalendarService
+    private val calendarService: CalendarService,
+    private val gasolineService: GasolineService,
+    private val inflationService: InflationService
 ) : MainViewModel() {
 
     companion object {
@@ -43,10 +49,16 @@ class MainViewModelImpl(
 
         private const val NEWS_DISPLAY_MILLISECONDS: Long = 30 * 1000
 
-        private const val NEWS_REFRESH_MILLISECONDS: Long = 30 * 60 * 1000
-        private const val CALENDAR_REFRESH_MILLISECONDS: Long = 30 * 60 * 1000
-        private const val WEATHER_REFRESH_MILLISECONDS: Long = 30 * 60 * 1000
+        private const val HALF_HOUR: Long = 30 * 60 * 1000
+        private const val SIX_HOURS: Long = 30 * 60 * 1000
+
+        private const val NEWS_REFRESH_MILLISECONDS: Long = HALF_HOUR
+        private const val CALENDAR_REFRESH_MILLISECONDS: Long = HALF_HOUR
+        private const val WEATHER_REFRESH_MILLISECONDS: Long = HALF_HOUR
+        private const val GAS_REFRESH_MILLISECONDS: Long = SIX_HOURS
+        private const val INFLATION_REFRESH_MILLISECONDS: Long = SIX_HOURS
         private const val SCREEN_BRIGHTNESS_REFRESH_MILLISECONDS: Long = 5 * 60 * 1000
+        private const val CLOCK_REFRESH_MILLISECONDS: Long = 1000
 
         private const val SCREEN_BRIGHTNESS_KEY = "screen_brightness"
     }
@@ -59,40 +71,56 @@ class MainViewModelImpl(
     override val weatherWidget = MutableLiveData<WeatherWidget>()
     override val calendarEvents = MutableLiveData<List<VEvent>>()
     override val currentArticle = MutableLiveData<Article>()
+    override val gasPrice = MutableLiveData<Double>()
+    override val inflation = MutableLiveData<String>()
     override val screenBrightnessPercent = MutableLiveData<Float>()
 
 
     init {
-        initClock()
-        initCalendar()
+        runPeriodically(::updateTime, CLOCK_REFRESH_MILLISECONDS, Dispatchers.Default)
+        runPeriodically(::refreshScreenBrightness, SCREEN_BRIGHTNESS_REFRESH_MILLISECONDS, Dispatchers.Default)
+
+        runPeriodically(::refreshCalendar, CALENDAR_REFRESH_MILLISECONDS, Dispatchers.IO)
+        runPeriodically(::gas, GAS_REFRESH_MILLISECONDS, Dispatchers.IO)
+        runPeriodically(::inflation, INFLATION_REFRESH_MILLISECONDS, Dispatchers.IO)
+
         initNews()
         initWeather()
-        initScreenBrightness()
     }
 
-    private fun initScreenBrightness() {
-        viewModelScope.launch(Dispatchers.IO) {
+    private fun runPeriodically(action: () -> Unit, delayMilliseconds: Long, dispatcher: CoroutineDispatcher) {
+        viewModelScope.launch(dispatcher) {
             while(true) {
-                refreshScreenBrightness()
-                delay(SCREEN_BRIGHTNESS_REFRESH_MILLISECONDS)
+                action()
+                delay(delayMilliseconds)
+            }
+        }
+    }
+
+    private fun gas() {
+        viewModelScope.launch(Dispatchers.IO) {
+            gasolineService.getNationalGasPrice()?.let {
+                gasPrice.postValue(it)
+            }
+        }
+    }
+
+    private fun inflation() {
+        viewModelScope.launch(Dispatchers.IO) {
+            inflationService.getInflationRate()?.let {
+                inflation.postValue(it)
             }
         }
     }
 
     private fun refreshScreenBrightness() {
-        Firebase.remoteConfig.fetchAndActivate()
-            .addOnCompleteListener {
-                screenBrightnessPercent.postValue(Firebase.remoteConfig.getDouble(SCREEN_BRIGHTNESS_KEY).toFloat())
-            }
+        val hour = Calendar.getInstance().get(Calendar.HOUR_OF_DAY)
+        val brightness = if (hour in 8..21) 1.0 else 0.25
+        screenBrightnessPercent.postValue(brightness.toFloat())
     }
 
-    private fun initCalendar() {
-        viewModelScope.launch(Dispatchers.IO) {
-            while(true) {
-                calendarEvents.postValue(calendarService.updateCalendar())
-                delay(CALENDAR_REFRESH_MILLISECONDS)
-            }
-        }
+    private fun refreshCalendar() {
+        calendarEvents.postValue(calendarService.updateCalendar())
     }
 
     private fun initNews() {
@@ -104,15 +132,6 @@ class MainViewModelImpl(
             }
         }
         showNewsOnScreen()
-    }
-
-    private fun initClock() {
-        viewModelScope.launch(Dispatchers.Default) {
-            while(true) {
-                updateTime()
-                delay(1000)
-            }
-        }
     }
 
     private fun updateTime() {
@@ -127,7 +146,7 @@ class MainViewModelImpl(
 
     override fun setLocation(location: Location) {
         this.location = location
-        viewModelScope.launch(Dispatchers.Default) {
+        viewModelScope.launch(Dispatchers.IO) {
             updateWeather()
         }
     }
@@ -153,7 +172,7 @@ class MainViewModelImpl(
     }
 
     private fun showNewsOnScreen() {
-        viewModelScope.launch(Dispatchers.Default) {
+        viewModelScope.launch(Dispatchers.IO) {
             while (true) {
                 for (article in articles.take(5)) {
                     currentArticle.postValue(article)

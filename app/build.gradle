@@ -94,8 +94,6 @@ dependencies {
     implementation 'com.google.api-client:google-api-client:1.31.5'
     implementation 'com.google.android.gms:play-services-location:19.0.1'
 
-    implementation 'net.sf.biweekly:biweekly:0.6.6'
-
     // Firebase
     implementation platform('com.google.firebase:firebase-bom:29.1.0')
     implementation 'com.google.firebase:firebase-crashlytics-ktx'
@@ -106,6 +104,9 @@ dependencies {
     // Glide
     implementation "com.github.bumptech.glide:glide:$glide_version"
     annotationProcessor "com.github.bumptech.glide:compiler:$glide_version"
+
+    implementation 'net.sf.biweekly:biweekly:0.6.6'
+    implementation 'org.jsoup:jsoup:1.14.3'
 
     testImplementation 'junit:junit:4.13.2'
 

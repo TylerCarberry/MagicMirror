@@ -22,6 +22,7 @@ import com.tylercarberry.magicmirror.weather.WeatherAdapter
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import java.text.SimpleDateFormat
 import java.util.*
+import kotlin.math.roundToInt
 
 
 @SuppressLint("MissingPermission")
@@ -112,6 +113,15 @@ class MainFragment : BaseFragment<MainFragmentBinding>() {
                 binding.newsHeader.text = it.title
                 binding.newsBody.text = it.abstract
                 binding.newsDivider.isVisible = it.title.isNotEmpty() && it.abstract.isNotEmpty()
+            }
+
+            gasPrice.observe(viewLifecycleOwner) {
+                val rounded = (it * 100).roundToInt() / 100.0
+                binding.gasolinePriceTextView.text = getString(R.string.gas_price, rounded)
+            }
+
+            inflation.observe(viewLifecycleOwner) {
+                binding.inflationTextView.text = getString(R.string.inflation, it)
             }
 
             screenBrightnessPercent.observe(viewLifecycleOwner) {

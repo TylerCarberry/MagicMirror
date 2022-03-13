@@ -126,6 +126,33 @@
         android:layout_height="wrap_content"/>
 
     <TextView
+        android:id="@+id/gasoline_price_text_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/white"
+        android:layout_marginTop="96dp"
+        android:layout_marginStart="8dp"
+        android:textSize="24sp"
+        android:fontFamily="sans-serif-condensed-light"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/calendar_recycler_view"
+        tools:text="Gas: $4.25"
+        />
+
+    <TextView
+        android:id="@+id/inflation_text_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/white"
+        android:textSize="24sp"
+        android:layout_marginStart="8dp"
+        android:fontFamily="sans-serif-condensed-light"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/gasoline_price_text_view"
+        tools:text="Inflation: 7.9%"
+        />
+
+    <TextView
         android:id="@+id/news_header"
         android:layout_width="600dp"
         android:layout_height="wrap_content"

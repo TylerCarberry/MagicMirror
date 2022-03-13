@@ -8,6 +8,8 @@ import com.google.gson.FieldNamingPolicy
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import com.tylercarberry.magicmirror.calendar.CalendarService
+import com.tylercarberry.magicmirror.gas.GasolineService
+import com.tylercarberry.magicmirror.inflation.InflationService
 import com.tylercarberry.magicmirror.news.NewsService
 import com.tylercarberry.magicmirror.news.NyTimesApi
 import com.tylercarberry.magicmirror.weather.WeatherApi
@@ -37,9 +39,11 @@ class App: Application() {
             single { provideNewsApi(get()) }
             single { provideOkHttpClient() }
             single { provideCalendarService(get()) }
+            single { provideGasolineService(get()) }
+            single { provideInflationService(get()) }
             single { provideNewsService(get()) }
             single { provideWeatherService(get()) }
-            viewModel<MainViewModel> { MainViewModelImpl(get(), get(), get()) }
+            viewModel<MainViewModel> { MainViewModelImpl(get(), get(), get(), get(), get()) }
         }
 
         startKoin {
@@ -72,6 +76,14 @@ class App: Application() {
 
     private fun provideCalendarService(client: OkHttpClient): CalendarService {
         return CalendarService(client)
+    }
+
+    private fun provideGasolineService(client: OkHttpClient): GasolineService {
+        return GasolineService(client)
+    }
+
+    private fun provideInflationService(client: OkHttpClient): InflationService {
+        return InflationService(client)
     }
 
     private fun provideWeatherApi(gson: Gson): WeatherApi {
