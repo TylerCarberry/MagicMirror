@@ -5,7 +5,6 @@ import com.google.firebase.crashlytics.FirebaseCrashlytics
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import org.jsoup.Jsoup
-import java.io.IOException
 
 class GasolineService(
     private val client: OkHttpClient
@@ -28,7 +27,7 @@ class GasolineService(
 
             val price = document.getElementsByClass("numb")[0].text().replace("$", "")
             return price.toDoubleOrNull()
-        } catch (e: IOException) {
+        } catch (e: Exception) {
             Log.e(TAG, "Error fetching gas price", e)
             FirebaseCrashlytics.getInstance().recordException(e)
             return null
