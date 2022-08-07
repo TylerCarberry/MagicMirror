@@ -99,7 +99,13 @@ class MainViewModelImpl(
 
     private fun gas() {
         viewModelScope.launch(Dispatchers.IO) {
-            gasolineService.getMassachusettsGasPrice()?.let {
+
+            val price =
+                gasolineService.getBostonGasPrice() ?:
+                gasolineService.getMassachusettsGasPrice() ?:
+                gasolineService.getNationalGasPrice()
+
+            price.let {
                 gasPrice.postValue(it)
             }
         }
