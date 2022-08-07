@@ -12,10 +12,10 @@ class GasolineService(
 
     companion object {
         private const val TAG = "GasolineService"
-        private const val URL = "https://gasprices.aaa.com/"
+        private const val URL = "https://gasprices.aaa.com/?state=MA"
     }
 
-    fun getNationalGasPrice(): Double? {
+    fun getMassachusettsGasPrice(): Double? {
         try {
             val request = Request.Builder()
                 .url(URL)
@@ -25,7 +25,7 @@ class GasolineService(
             val html = response.body?.string() ?: return null
             val document = Jsoup.parse(html)
 
-            val price = document.getElementsByClass("numb")[0].text().replace("$", "")
+            val price = document.getElementsByClass("numb")[1].text().replace("$", "")
             return price.toDoubleOrNull()
         } catch (e: Exception) {
             Log.e(TAG, "Error fetching gas price", e)
