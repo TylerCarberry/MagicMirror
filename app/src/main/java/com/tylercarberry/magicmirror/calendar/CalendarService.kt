@@ -9,6 +9,7 @@ import com.tylercarberry.magicmirror.MainViewModelImpl
 import com.tylercarberry.magicmirror.R
 import okhttp3.OkHttpClient
 import okhttp3.Request
+import java.io.IOException
 import java.util.*
 
 class CalendarService(
@@ -25,9 +26,12 @@ class CalendarService(
         val myCal = getICalFromUrl(calendarUrl)
         val now = Date()
 
-        return holidaysCal.events
+        val holidays = holidaysCal?.events ?: listOf()
+        val events = myCal?.events ?: listOf()
+
+        return holidays
             .asSequence()
-            .plus(myCal.events)
+            .plus(events)
             .filter { it.dateEnd.value.after(now) }
             .filter { it.dateStart.value.time - 30 * MainViewModelImpl.SECONDS_IN_A_DAY < now.time }
             .sortedBy { it.dateStart.value }
@@ -35,14 +39,18 @@ class CalendarService(
             .toList()
     }
 
-    private fun getICalFromUrl(url: String): ICalendar {
-        val request = Request.Builder()
-            .url(url)
-            .build()
+    private fun getICalFromUrl(url: String): ICalendar? {
+        val response = try {
+            val request = Request.Builder()
+                .url(url)
+                .build()
 
-        val response = client.newCall(request).execute()
+            client.newCall(request).execute()
+        } catch (e: IOException) {
+            return null
+        }
+
         val str = response.body?.string() ?: ""
-
         return Biweekly.parse(str).first()
     }
 
